@@ -1,3 +1,11 @@
+# Just a working Fork
+Fork of the now [archived repository](https://github.com/inlets/inlets-archived).
+The last set of changes has been undone. Contains all necessary files for building and compiled files.
+
+See the [secure vps](./docs/securevps.md) for a simple complete and secure sample.
+
+# Original Readme
+
 ## inlets is a Cloud Native Tunnel written in Go
 
 <img src="docs/inlets-logo-sm.png" width="150px">
