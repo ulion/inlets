@@ -1,4 +1,4 @@
-// Copyright (c) Inlets Author(s) 2021. All rights reserved.
+// Copyright (c) Inlets Author(s) 2019. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package cmd
@@ -26,24 +26,22 @@ func init() {
 	clientCmd.Flags().Bool("strict-forwarding", true, "forward only to the upstream URLs specified")
 
 	clientCmd.Flags().Bool("insecure", false, "allow the client to connect to a server without encryption")
-	clientCmd.SilenceUsage = true
-	clientCmd.SilenceErrors = true
 }
 
 type UpstreamParser interface {
-	Parse(input string) (map[string]string, error)
+	Parse(input string) map[string]string
 }
 
 type ArgsUpstreamParser struct {
 }
 
-func (a *ArgsUpstreamParser) Parse(input string) (map[string]string, error) {
-	upstreamMap, err := buildUpstreamMap(input)
+func (a *ArgsUpstreamParser) Parse(input string) map[string]string {
+	upstreamMap := buildUpstreamMap(input)
 
-	return upstreamMap, err
+	return upstreamMap
 }
 
-func buildUpstreamMap(args string) (map[string]string, error) {
+func buildUpstreamMap(args string) map[string]string {
 	items := make(map[string]string)
 
 	entries := strings.Split(args, ",")
@@ -63,11 +61,7 @@ func buildUpstreamMap(args string) (map[string]string, error) {
 		}
 	}
 
-	if len(items) > 1 {
-		return items, fmt.Errorf("if you need multiple upstream values, upgrade to inlets PRO")
-	}
-
-	return items, nil
+	return items
 }
 
 // clientCmd represents the client sub command.
@@ -75,19 +69,19 @@ var clientCmd = &cobra.Command{
 	Use:   "client",
 	Short: "Start the tunnel client.",
 	Long:  `Start the tunnel client.`,
-	Example: `  # Start a secure tunnel connection over the internet to forward a Node.js 
-  # server running on port 3000
-  inlets client \
-  --url=wss://192.168.0.101 \
-  --upstream=http://127.0.0.1:3000 \
-  --token TOKEN
-  
-  # Start an insecure tunnel connection over your local network
+	Example: `# Start an insecure tunnel connection over your local network
   inlets client \
     --url=ws://192.168.0.101:80 \
     --upstream=http://127.0.0.1:3000 \
     --token TOKEN \
     --insecure
+
+  # Start a secure tunnel connection over the internet to forward a Node.js 
+  # server running on port 3000
+  inlets client \
+    --url=wss://192.168.0.101 \
+    --upstream=http://127.0.0.1:3000 \
+    --token TOKEN
 
   Note: You can pass the --token argument followed by a token value to both the server and client to prevent unauthorized connections to the tunnel.`,
 	RunE:          runClient,
@@ -109,10 +103,7 @@ func runClient(cmd *cobra.Command, _ []string) error {
 	}
 
 	argsUpstreamParser := ArgsUpstreamParser{}
-	upstreamMap, err := argsUpstreamParser.Parse(upstream)
-	if err != nil {
-		return err
-	}
+	upstreamMap := argsUpstreamParser.Parse(upstream)
 
 	url, err := cmd.Flags().GetString("url")
 	if err != nil {

@@ -1,4 +1,4 @@
-// Copyright (c) Inlets Author(s) 2021. All rights reserved.
+// Copyright (c) Inlets Author(s) 2019. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package cmd
@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/inlets/inlets/pkg/server"
@@ -19,9 +20,11 @@ import (
 var serverCmd = &cobra.Command{
 	Use:   "server",
 	Short: `Start the tunnel server.`,
-	Long: `Start the tunnel server on a machine with a publicly-accessible IPv4 IP address such as a VPS.
+	Long: `Start the tunnel server on a machine with a publicly-accessible IPv4 IP 
+address such as a VPS.
 
-Note: You can pass the --token argument followed by a token value to both the server and client to prevent unauthorized connections to the tunnel.`,
+Note: You can pass the --token argument followed by a token value to both the 
+server and client to prevent unauthorized connections to the tunnel.`,
 	RunE: runServer,
 	Example: `  # Bind the data and control plane to 80 and 8080
   inlets server --port 80 \
@@ -31,8 +34,6 @@ Note: You can pass the --token argument followed by a token value to both the se
   inlets server --port 80 \
     --control-port 8001 \
     --control-addr 127.0.0.1`,
-	SilenceUsage:  true,
-	SilenceErrors: true,
 }
 
 func init() {
@@ -101,9 +102,18 @@ func runServer(cmd *cobra.Command, _ []string) error {
 		return errors.Wrap(err, "failed to get the 'port' value.")
 	}
 
-	controlPort, err := cmd.Flags().GetInt("control-port")
-	if err != nil {
-		return errors.Wrap(err, "failed to get the 'control-port' value.")
+	controlPort := port
+	if cmd.Flags().Changed("control-port") {
+		val, err := cmd.Flags().GetInt("control-port")
+		if err != nil {
+			return errors.Wrap(err, "failed to get the 'control-port' value.")
+		}
+		controlPort = val
+	}
+
+	if portVal, exists := os.LookupEnv("PORT"); exists && len(portVal) > 0 {
+		port, _ = strconv.Atoi(portVal)
+		controlPort = port
 	}
 
 	disableWrapTransport, err := cmd.Flags().GetBool("disable-transport-wrapping")
@@ -119,10 +129,6 @@ func runServer(cmd *cobra.Command, _ []string) error {
 	controlAddr, err := cmd.Flags().GetString("control-addr")
 	if err != nil {
 		return errors.Wrap(err, "failed to get the 'control-addr' value.")
-	}
-
-	if port == controlPort {
-		return fmt.Errorf("the --port and --control-port cannot be the same value")
 	}
 
 	inletsServer := server.Server{
