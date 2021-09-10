@@ -19,7 +19,7 @@ Type=simple
 Restart=always
 RestartSec=1
 StartLimitInterval=0
-EnvironmentFile=/etc/default/inlets
+#EnvironmentFile=/etc/default/inlets
 ExecStart=/usr/local/bin/inlets server --port=8080 --token="<mytoken>"
 
 [Install]
@@ -31,12 +31,10 @@ WantedBy=multi-user.target
 systemctl daemon-reload
 systemctl start inlets
 systemctl enable inlets
-
 systemctl status inlets
 ```
 
-5) Use [Caddy](https://caddyserver.com/docs/install#debian-ubuntu-raspbian) to provide a revere proxy with Certificate for the exit node.
-Always prefix your client websocket connection with `--url wss://` instead of `--url ws://` for a secure tunnel!!
+5) Use [Caddy](https://caddyserver.com/docs/install#debian-ubuntu-raspbian) to provide a revere proxy with certificate for the exit node.
 `/etc/caddy/Caddyfile`
 ```bash
 dev.example.com
@@ -74,6 +72,8 @@ spec:
         args:
         - "client"
         - "--upstream=dev.example.com=http://nginx-ingress-ingress-nginx-controller.kube-system:80"
-        - "--remote=wss://dev.example.com"
+        - "--url=wss://dev.example.com"
         - "--token=<mytoken>"
 ```
+
+**Always prefix your client websocket connection with `--url wss://` instead of `--url ws://` for a secure tunnel!!**
