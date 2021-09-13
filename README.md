@@ -7,9 +7,9 @@ See the [secure vps](./docs/securevps.md) for a simple complete and secure sampl
 
 [Version 3.0.0](https://github.com/cubed-it/inlets/releases/tag/3.0.0) contains the last original open source version before archiving minus the latest changes that reduce functionality.
 
-[Version 4.0.0](https://github.com/cubed-it/inlets/releases/tag/4.0.0) like version 3, but with the possibility to tunnel TCP ports and ranges. See the following example for usage:
+[Version 4.0.0](https://github.com/cubed-it/inlets/releases/tag/4.0.0) is like version 3, but with the possibility to tunnel TCP ports and ranges. Example:
 ```bash
-inlets client --url=ws://127.0.0.1:8080 --token="abcdef" --insecure \
+inlets client --url=wss://dev.example.com --token="<mytoken>" \
   --upstream=dev.example.com=nginx:80,tcp:5432=192.168.145.131:5432,tcp:7000=192.168.145.50:8800-8810
 ```
 
