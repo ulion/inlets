@@ -42,13 +42,12 @@ func makeFilter(upstreamMap map[string]string) func(network, address string) boo
 	trimmedMap := map[string]bool{}
 
 	for _, v := range upstreamMap {
+		host := v
 		u, err := url.Parse(v)
-		if err != nil {
-			log.Printf("Error parsing: %s, skipping.\n", v)
-			continue
+		if err == nil {
+			host = u.Host
 		}
-
-		trimmedMap[u.Host] = true
+		trimmedMap[host] = true
 	}
 
 	return func(network, address string) bool {
@@ -62,6 +61,7 @@ func makeFilter(upstreamMap map[string]string) func(network, address string) boo
 			return true
 		}
 
+		log.Printf("Access denied. Target host %s is unknown.", address)
 		return false
 	}
 }

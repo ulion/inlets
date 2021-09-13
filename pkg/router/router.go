@@ -12,6 +12,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/inlets/inlets/pkg/servertcp"
 	"github.com/inlets/inlets/pkg/transport"
 	"github.com/rancher/remotedialer"
 )
@@ -40,6 +41,8 @@ type Router struct {
 	domains    map[string][]target
 	clients    map[string][]target
 	transports map[transportKey]transportValue
+
+	serverstcp map[string]*servertcp.TcpServer
 }
 
 type Route struct {
@@ -140,10 +143,22 @@ func (r *Router) Add(req *http.Request) string {
 	if r.domains == nil {
 		r.domains = map[string][]target{}
 		r.clients = map[string][]target{}
+		r.serverstcp = map[string]*servertcp.TcpServer{}
 	}
 
 	for _, target := range targets {
 		r.domains[target.domain] = append(r.domains[target.domain], target)
+
+		parts := strings.Split(target.domain, ":")
+		if len(parts) == 2 && parts[0] == "tcp" {
+			if r.serverstcp[parts[1]] != nil {
+				continue
+			}
+			tcpServer := servertcp.NewServer(":"+parts[1], target.target, id, r.Server)
+			if tcpServer != nil {
+				r.serverstcp[parts[1]] = tcpServer
+			}
+		}
 	}
 
 	r.clients[id] = targets
@@ -168,10 +183,29 @@ func (r *Router) Remove(req *http.Request) {
 			}
 		}
 
+		var listeningTcpServer *servertcp.TcpServer
+		parts := strings.Split(idTarget.domain, ":")
+		if len(parts) == 2 && parts[0] == "tcp" {
+			listeningTcpServer = r.serverstcp[parts[1]]
+		}
+
 		if len(newTargets) == 0 {
 			delete(r.domains, idTarget.domain)
+
+			if listeningTcpServer != nil {
+				listeningTcpServer.Stop()
+				delete(r.serverstcp, parts[1])
+			}
 		} else {
 			r.domains[idTarget.domain] = newTargets
+
+			if listeningTcpServer != nil && listeningTcpServer.ClientId == id {
+				listeningTcpServer.Stop()
+				tcpServer := servertcp.NewServer(":"+parts[1], newTargets[0].target, newTargets[0].id, r.Server)
+				if tcpServer != nil {
+					r.serverstcp[parts[1]] = tcpServer
+				}
+			}
 		}
 	}
 }

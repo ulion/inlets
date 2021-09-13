@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/inlets/inlets/pkg/client"
@@ -50,11 +51,44 @@ func buildUpstreamMap(args string) map[string]string {
 		if len(kvp) == 1 {
 			items[""] = strings.TrimSpace(kvp[0])
 		} else {
+			// expand possible tcp range
+			tcpParts := strings.Split(kvp[0], ":")
+			if len(tcpParts) == 2 && tcpParts[0] == "tcp" {
+				portParts := strings.Split(kvp[1], ":")
+				if len(portParts) == 2 {
+					portRange := strings.Split(portParts[1], "-")
+					if len(portRange) == 2 {
+						sourceFrom, err := strconv.Atoi(tcpParts[1])
+						if err != nil {
+							log.Fatal(err)
+						}
+						targetFrom, err := strconv.Atoi(portRange[0])
+						if err != nil {
+							log.Fatal(err)
+						}
+						targetTo, err := strconv.Atoi(portRange[1])
+						if err != nil {
+							log.Fatal(err)
+						}
+						count := 0
+						for i := targetFrom; i <= targetTo; i++ {
+							items[strings.TrimSpace(tcpParts[0]+":"+strconv.Itoa(sourceFrom+count))] = strings.TrimSpace(portParts[0] + ":" + strconv.Itoa(i))
+							count++
+						}
+						continue
+					}
+				}
+			}
+
 			items[strings.TrimSpace(kvp[0])] = strings.TrimSpace(kvp[1])
 		}
 	}
 
 	for k, v := range items {
+		parts := strings.SplitN(k, ":", 2)
+		if len(parts) == 2 && parts[0] == "tcp" {
+			continue
+		}
 		hasScheme := (strings.HasPrefix(v, "http://") || strings.HasPrefix(v, "https://"))
 		if hasScheme == false {
 			items[k] = fmt.Sprintf("http://%s", v)
