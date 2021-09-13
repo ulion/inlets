@@ -5,6 +5,14 @@ The bottom line is that this fork contains contains all necessary files for [bui
 
 See the [secure vps](./docs/securevps.md) for a simple complete and secure sample.
 
+[Version 3.0.0](https://github.com/cubed-it/inlets/releases/tag/3.0.0) contains the last original open source version before archiving minus the last set of destructive changes.
+
+[Version 4.0.0](https://github.com/cubed-it/inlets/releases/tag/4.0.0) like version 3, but with the possibility to tunnel TCP ports. See the following example for usage
+```bash
+inlets.exe client --url=ws://127.0.0.1:8080 --token="abcdef" --insecure \
+  --upstream=dev.example.com=nginx:80,tcp:5432=192.168.145.131:5432,tcp:7000=192.168.145.50:8800-8810
+```
+
 # Original Readme
 
 ## inlets is a Cloud Native Tunnel written in Go
