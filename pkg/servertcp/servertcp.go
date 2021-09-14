@@ -79,5 +79,4 @@ func (s *TcpServer) handleConection(c net.Conn) {
 	io.Copy(c, cRemote)
 	cRemote.Close()
 	log.Printf("%s closed tcp", remoteAddr)
-	c.Close()
 }
