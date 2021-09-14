@@ -1,13 +1,13 @@
 # Just a working Fork
 Fork of the now [archived repository](https://github.com/inlets/inlets-archived).
 The last set of [destructive changes](https://github.com/cubed-it/inlets/commit/7b68ba907fa9dfe55b15ec2f7f7e0de4c59b1cbf) have been reverted, which seem to have arisen as a result of [dissatisfaction](https://twitter.com/alexellisuk/status/1412768480684916741).
-The bottom line is that this fork contains contains all necessary files for [building](https://github.com/cubed-it/inlets/blob/master/Makefile) and [compiled binaries](https://github.com/cubed-it/inlets/releases/tag/3.0.0) and ready to use [docker images](https://github.com/cubed-it/inlets/pkgs/container/inlets).
+The bottom line is that this fork contains contains all necessary files for [building](https://github.com/cubed-it/inlets/blob/master/Makefile) and [compiled binaries](https://github.com/cubed-it/inlets/releases/tag/4.0.0) and ready to use [docker images](https://github.com/cubed-it/inlets/pkgs/container/inlets).
 
 See the [secure vps](./docs/securevps.md) for a simple complete and secure sample.
 
-[Version 3.0.0](https://github.com/cubed-it/inlets/releases/tag/3.0.0) contains the last original open source version before archiving minus the latest changes that reduce functionality.
+[Version 3](https://github.com/cubed-it/inlets/releases/tag/3.0.0) contains the last original open source version before archiving minus the latest changes that limited functionality [[1](https://github.com/cubed-it/inlets/commit/7b68ba907fa9dfe55b15ec2f7f7e0de4c59b1cbf#diff-77cc8dd5b2fc01f2cbc5f714d0ae7ac6cf20bf5dc4eba6733bd3edbc5eefb7d9L67)] [[2](https://github.com/cubed-it/inlets/commit/7b68ba907fa9dfe55b15ec2f7f7e0de4c59b1cbf#diff-ee2560d627cd77f1563972217a33ac39a4bf56fbf30d7f560fbb4199b9f70197L125)].
 
-[Version 4.0.0](https://github.com/cubed-it/inlets/releases/tag/4.0.0) is like version 3, but with the possibility to tunnel TCP ports and ranges. Example:
+[Version 4](https://github.com/cubed-it/inlets/releases/tag/4.0.0) is like version 3, but with the [possibility](https://github.com/cubed-it/inlets/commit/9ac63ad4ac6a751b98aa0e0359d476ee16efb6e4#diff-23e47239723723da6290eb5648dd4da5bbb3aebebdede8a78e23c7985b974c3a) to tunnel TCP ports and ranges. Example:
 ```bash
 inlets client --url=wss://dev.example.com --token="<mytoken>" \
   --upstream=dev.example.com=nginx:80,tcp:5432=192.168.145.131:5432,tcp:7000=192.168.145.50:8800-8810
