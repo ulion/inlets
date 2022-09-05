@@ -7,7 +7,8 @@ tasks:
   - init: go get -v ./...
     command: |
       head -c 16 /dev/urandom | shasum | cut -d" " -f1 > /tmp/inlets-token
-      inlets server --port=8090 --token="$(cat /tmp/inlets-token)"
+      go build
+      ./inlets server --port=8090 --token="$(cat /tmp/inlets-token)"
   - command: |
       clear
       gp await-port 8090 &&
