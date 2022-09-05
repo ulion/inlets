@@ -1,5 +1,5 @@
-checkoutLocation: go/src/github.com/inlets/inlets
-workspaceLocation: go/src/github.com/inlets/inlets
+checkoutLocation: go/src/github.com/cubed-it/inlets
+workspaceLocation: go/src/github.com/cubed-it/inlets
 ports:
   - port: 8090
     onOpen: ignore
