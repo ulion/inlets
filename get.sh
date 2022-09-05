@@ -128,15 +128,3 @@ getPackage() {
 
 hasCli
 getPackage
-
-echo ""
-echo "================================================================"
-echo "inlets has been replaced by inlets PRO"
-echo ""
-echo "For secure, encrypted tunnels, access to cloud and Kubernetes "
-echo "automation, upgrade to inlets PRO."
-echo ""
-echo "Find out more at: https://inlets.dev" 
-echo ""
-echo "================================================================"
-echo ""
