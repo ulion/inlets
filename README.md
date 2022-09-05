@@ -1,7 +1,7 @@
 # Just a working Fork
 Fork of the now [archived repository](https://github.com/inlets/inlets-archived).
 The last set of [destructive changes](https://github.com/cubed-it/inlets/commit/7b68ba907fa9dfe55b15ec2f7f7e0de4c59b1cbf) have been reverted, which seem to have arisen as a result of [dissatisfaction](https://twitter.com/alexellisuk/status/1412768480684916741).
-The bottom line is that this fork contains contains all necessary files for [building](https://github.com/cubed-it/inlets/blob/master/Makefile) and [compiled binaries](https://github.com/cubed-it/inlets/releases/tag/4.0.0) and ready to use [docker images](https://github.com/cubed-it/inlets/pkgs/container/inlets).
+The bottom line is that this fork contains all necessary files for [building](https://github.com/cubed-it/inlets/blob/master/Makefile) and [compiled binaries](https://github.com/cubed-it/inlets/releases/tag/4.0.0) and ready to use [docker images](https://github.com/cubed-it/inlets/pkgs/container/inlets).
 
 See the [secure vps](./docs/securevps.md) for a simple complete and secure sample.
 
