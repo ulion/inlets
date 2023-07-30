@@ -89,6 +89,8 @@ func (c *Client) Connect() error {
 		filter = makeAllowsAllFilter()
 	}
 
-	remotedialer.ClientConnect(context.Background(), url+"/tunnel", headers, nil, filter, nil)
+	if err := remotedialer.ClientConnect(context.Background(), url+"/tunnel", headers, nil, filter, nil); err != nil {
+		return err
+	}
 	return nil
 }
